@@ -135,10 +135,12 @@ The following basic/placeholder function is used to catch several 'suspicious' p
             suspicious_parameter_names = ['password', 'pwd', 'secret']
             event_source = record['eventSource']
             event_name = record['eventName']
-            parameter_name = record['requestParameters']['name']
-
-            if event_source in ['ssm.amazonaws.com']: 
-                if event_name.startswith('PutParameter'):
+            
+            if event_source == 'ssm.amazonaws.com' and event_name.startswith('PutParameter'): 
+                print ('Found entry for SSM')
+                parameter_name = record['requestParameters']['name']
+                parameter_type = record['requestParameters']['type']
+                if parameter_type == 'String':
                     #print_short_record(record)
                     for item in suspicious_parameter_names:
                       if item in parameter_name:
